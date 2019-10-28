@@ -28,6 +28,10 @@ export class TodosService {
     return this.todos;
   }
 
+  findOne(id: string): Todo[] {
+    return this.todos.filter(todo => todo.id === Number(id));
+  }
+
   create(todo: Todo) {
     this.todos = [...this.todos, todo];
   }
