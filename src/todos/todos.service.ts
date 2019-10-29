@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Todo } from './interfaces/todo.interface';
 import { CreateTodoDto } from './dto/create-todo.dto';
 
@@ -35,5 +35,26 @@ export class TodosService {
 
   create(todo: CreateTodoDto) {
     this.todos = [...this.todos, todo as Todo];
+  }
+
+  updateTodo(id: string, todo: Todo) {
+    const todoToUpdate = this.todos.find(t => t.id === +id);
+
+    if (!todoToUpdate) {
+      return new NotFoundException(`"${id} not found"`);
+    }
+
+    if (todo.hasOwnProperty('done')) {
+      todoToUpdate.done = todo.done;
+    }
+    if (todo.title) {
+      todoToUpdate.title = todo.title;
+    }
+    if (todo.description) {
+      todoToUpdate.description = todo.description;
+    }
+    const updatedTodos = this.todos.map(t => (t.id !== +id ? t : todoToUpdate));
+    this.todos = [...updatedTodos];
+    return { updateTodo: 1, todo: todoToUpdate };
   }
 }
