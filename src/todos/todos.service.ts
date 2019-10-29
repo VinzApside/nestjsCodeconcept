@@ -33,7 +33,7 @@ export class TodosService {
     return this.todos.filter(todo => todo.id === Number(id));
   }
 
-  create(todo: CreateTodoDto) {
+  createTodo(todo: CreateTodoDto) {
     this.todos = [...this.todos, todo as Todo];
   }
 
@@ -56,5 +56,15 @@ export class TodosService {
     const updatedTodos = this.todos.map(t => (t.id !== +id ? t : todoToUpdate));
     this.todos = [...updatedTodos];
     return { updateTodo: 1, todo: todoToUpdate };
+  }
+
+  deleteTodo(id: string) {
+    const nbOfTodosBeforeDelete = this.todos.length;
+    this.todos = [...this.todos.filter(todo => todo.id !== +id)];
+    if (this.todos.length < nbOfTodosBeforeDelete) {
+      return { deletedTodos: 1, nbTodos: this.todos.length };
+    } else {
+      return { deletedTodos: 0, nbTodos: this.todos.length };
+    }
   }
 }
